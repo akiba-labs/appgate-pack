@@ -24,7 +24,7 @@ Not legal advice. No approval guarantee. We never log into App Store Connect.
 Requires Node 20+.
 
 ```bash
-git clone https://github.com/sean0007/appgate-pack.git
+git clone https://github.com/akiba-labs/appgate-pack.git
 cd appgate-pack
 cp .env.example .env.local
 npm install
@@ -54,7 +54,7 @@ When Payment Links are unset, paid CTAs stay “coming later.” Overnight intak
 
 ## Deploy to Vercel (Hobby) from GitHub
 
-1. Import `https://github.com/sean0007/appgate-pack`.
+1. Import `https://github.com/akiba-labs/appgate-pack`.
 2. Framework: **Next.js**. Build: `npm run build`.
 3. Set `NEXT_PUBLIC_SITE_URL` to `https://appgate-pack.vercel.app` (or your domain). If unset, metadata uses that origin. Leave Stripe blank until you care about charging. Digest stays a local stub until `DIGEST_WEBHOOK_URL` is `https`.
 4. Confirm `/`, `/check`, `/free/4-2-capacitor`, `/digest`.
