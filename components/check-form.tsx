@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { withBasePath } from "@/lib/hosting";
 import {
   parseCheckInput,
   stacks,
@@ -53,7 +54,7 @@ export function CheckForm({
 
   return (
     <form
-      action="/check"
+      action={withBasePath("/check")}
       method="GET"
       onSubmit={onSubmit}
       className="grid gap-5 rounded-xl border border-line bg-card p-6 sm:p-8"

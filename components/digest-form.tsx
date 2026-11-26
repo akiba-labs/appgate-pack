@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { digestCopy } from "@/lib/digest";
+import { isGithubPages } from "@/lib/hosting";
 
 const STORAGE_KEY = "appgate.digest.local";
 
@@ -72,6 +73,13 @@ export function DigestForm({ initialNotice }: { initialNotice?: Notice | null })
     const formData = new FormData(event.currentTarget);
     setPending(true);
     setError(null);
+
+    if (isGithubPages) {
+      rememberLocally(email, name);
+      setResult({ stored: false, message: digestCopy.stub });
+      setPending(false);
+      return;
+    }
 
     try {
       const response = await fetch("/api/digest", {

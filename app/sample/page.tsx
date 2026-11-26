@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DisclaimerCallout } from "@/components/disclaimer-callout";
 import { MarkdownDoc } from "@/components/markdown-doc";
+import { API_PAUSED_NOTE, isGithubPages } from "@/lib/hosting";
 import { getSampleDoc } from "@/lib/kit";
 
 export const metadata: Metadata = {
@@ -27,9 +28,13 @@ export default async function SamplePage() {
         draft, resubmit notes.
       </p>
       <div className="no-print mt-5 flex gap-4 text-sm">
-        <a href="/api/sample" className="text-accent underline">
-          Download markdown
-        </a>
+        {isGithubPages ? (
+          <p className="text-muted">{API_PAUSED_NOTE}</p>
+        ) : (
+          <a href="/api/sample" className="text-accent underline">
+            Download markdown
+          </a>
+        )}
         <Link href="/overnight" className="text-accent underline">
           Start overnight intake
         </Link>

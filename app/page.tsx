@@ -8,6 +8,7 @@ import {
   scorePrecheck,
   toCheckQuery,
 } from "@/lib/precheck";
+import { API_PAUSED_NOTE, isGithubPages } from "@/lib/hosting";
 import { siteUrl } from "@/lib/site";
 
 const shareTitle = "Capacitor app App Store guideline 4.2 rejection checker (free, for WebView and PWA apps too)";
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   },
 };
 
-const magnets = [
+const magnets: { href: string | null; kicker: string; title: string; body: string }[] = [
   {
     href: "/check",
     kicker: "01 · 30 seconds",
@@ -44,10 +45,12 @@ const magnets = [
     body: "Evidence Apple can tap, what not to claim, and how to reply. Copy it or print it.",
   },
   {
-    href: "https://free-agent-tools.vercel.app",
+    href: isGithubPages ? null : "https://free-agent-tools.vercel.app",
     kicker: "03 · For AI agents",
     title: "Free API and MCP tool",
-    body: "GET /api/precheck returns the same card as JSON with no key. It is also a tool on the free Free Agent Tools MCP server.",
+    body: isGithubPages
+      ? API_PAUSED_NOTE
+      : "GET /api/precheck returns the same card as JSON with no key. It is also a tool on the free Free Agent Tools MCP server.",
   },
 ];
 
@@ -86,7 +89,9 @@ const faqs = [
   },
   {
     q: "Is there an API or MCP server for AI agents?",
-    a: "Yes. GET or POST https://appgate-pack.vercel.app/api/precheck with name, description, stack, and f1 to f3 returns the card as JSON, with no key. The same precheck is a tool on the free Free Agent Tools MCP server at https://free-agent-tools.vercel.app/mcp.",
+    a: isGithubPages
+      ? API_PAUSED_NOTE
+      : "Yes. GET or POST https://appgate-pack.vercel.app/api/precheck with name, description, stack, and f1 to f3 returns the card as JSON, with no key. The same precheck is a tool on the free Free Agent Tools MCP server at https://free-agent-tools.vercel.app/mcp.",
   },
   {
     q: "Do you log into App Store Connect?",
@@ -112,7 +117,7 @@ const appJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "AppGate Pack: free App Store Guideline 4.2 precheck",
-  url: "https://appgate-pack.vercel.app/check",
+  url: `${siteUrl()}${isGithubPages ? "/check/" : "/check"}`,
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any (web browser)",
   isAccessibleForFree: true,
@@ -122,7 +127,9 @@ const appJsonLd = {
 
 export default function HomePage() {
   const high = scorePrecheck(demoHigh);
-  const shareHigh = `${siteUrl()}/check?${toCheckQuery(demoHigh)}`;
+  const shareHigh = isGithubPages
+    ? `${siteUrl()}/check/`
+    : `${siteUrl()}/check?${toCheckQuery(demoHigh)}`;
 
   return (
     <main>
@@ -165,11 +172,17 @@ export default function HomePage() {
             <ResultCard input={demoHigh} result={high} shareUrl={shareHigh} />
             <p className="mt-3 text-center text-xs text-muted">
               Sample HIGH —{" "}
-              <Link href={`/check?${toCheckQuery(demoHigh)}#result`} className="underline">
+              <Link
+                href={isGithubPages ? "/check" : `/check?${toCheckQuery(demoHigh)}#result`}
+                className="underline"
+              >
                 open this result
               </Link>
               {" · "}
-              <Link href={`/check?${toCheckQuery(demoLow)}#result`} className="underline">
+              <Link
+                href={isGithubPages ? "/check" : `/check?${toCheckQuery(demoLow)}#result`}
+                className="underline"
+              >
                 see a LOW
               </Link>
             </p>
@@ -180,17 +193,25 @@ export default function HomePage() {
       <section className="mx-auto max-w-6xl px-5 py-16">
         <h2 className="font-serif text-3xl tracking-tight">Start here</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {magnets.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-xl border border-line bg-card p-5 hover:border-accent/40"
-            >
-              <p className="font-mono text-xs text-accent">{item.kicker}</p>
-              <h3 className="mt-2 font-medium text-ink">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted">{item.body}</p>
-            </Link>
-          ))}
+          {magnets.map((item) => {
+            const className = "rounded-xl border border-line bg-card p-5";
+            const body = (
+              <>
+                <p className="font-mono text-xs text-accent">{item.kicker}</p>
+                <h3 className="mt-2 font-medium text-ink">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{item.body}</p>
+              </>
+            );
+            return item.href ? (
+              <Link key={item.href} href={item.href} className={`${className} hover:border-accent/40`}>
+                {body}
+              </Link>
+            ) : (
+              <div key={item.title} className={className}>
+                {body}
+              </div>
+            );
+          })}
         </div>
       </section>
 
