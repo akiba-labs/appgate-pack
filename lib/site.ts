@@ -1,3 +1,5 @@
+import { isGithubPages, pagesSiteUrl } from "@/lib/hosting";
+
 export const site = {
   name: "AppGate Pack",
   tagline: "Free App Store wrapper precheck for 4.2 / 4.3 / metadata.",
@@ -14,6 +16,8 @@ function isLocalHost(hostname: string) {
 }
 
 export function siteUrl() {
+  if (isGithubPages) return pagesSiteUrl(defaultSiteUrl);
+
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (!configured) return defaultSiteUrl;
 

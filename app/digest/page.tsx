@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DigestForm } from "@/components/digest-form";
 import { DisclaimerCallout } from "@/components/disclaimer-callout";
+import { API_PAUSED_NOTE, isGithubPages } from "@/lib/hosting";
 
 export const metadata: Metadata = {
   title: "Weekly App Store rejection patterns",
@@ -14,7 +15,9 @@ export default async function DigestPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const params = await searchParams;
+  const params: Record<string, string | string[] | undefined> = isGithubPages
+    ? {}
+    : await searchParams;
   const noticeParam = typeof params.notice === "string" ? params.notice : "";
   const errorParam = typeof params.error === "string" ? params.error : "";
   const legacyOk = params.ok === "1";
@@ -53,6 +56,7 @@ export default async function DigestPage({
         </p>
       </div>
       <div className="space-y-6">
+        {isGithubPages ? <p className="text-sm leading-6 text-muted">{API_PAUSED_NOTE}</p> : null}
         <DigestForm initialNotice={initialNotice} />
         <aside className="rounded-xl border border-dashed border-line bg-paper px-5 py-6 text-center">
           <p className="text-xs uppercase tracking-[0.16em] text-muted">

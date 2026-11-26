@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { API_PAUSED_NOTE, isGithubPages } from "@/lib/hosting";
 import { SIBLING_TOOLS } from "@/lib/site";
 
 export function SiteFooter() {
@@ -12,6 +13,9 @@ export function SiteFooter() {
             Apple decides. No approval guarantee. We never log into App Store
             Connect and we never ask for your Apple ID.
           </p>
+          {isGithubPages ? (
+            <p className="mt-3 text-xs leading-5 text-muted">{API_PAUSED_NOTE}</p>
+          ) : null}
           <p className="mt-3 text-xs leading-5 text-muted">
             More free tools{" "}
             {SIBLING_TOOLS.map((tool, i) => (

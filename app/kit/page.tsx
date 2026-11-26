@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DisclaimerCallout } from "@/components/disclaimer-callout";
 import { MarkdownDoc } from "@/components/markdown-doc";
+import { API_PAUSED_NOTE, isGithubPages } from "@/lib/hosting";
 import { getKitDocs } from "@/lib/kit";
 
 export const metadata: Metadata = {
@@ -61,12 +62,16 @@ export default async function KitPage() {
               <p className="text-xs uppercase tracking-[0.14em] text-muted">
                 {doc.slug}.md
               </p>
-              <a
-                href={`/api/kit/${doc.slug}`}
-                className="text-sm text-accent underline"
-              >
-                Download markdown
-              </a>
+              {isGithubPages ? (
+                <p className="text-sm text-muted">{API_PAUSED_NOTE}</p>
+              ) : (
+                <a
+                  href={`/api/kit/${doc.slug}`}
+                  className="text-sm text-accent underline"
+                >
+                  Download markdown
+                </a>
+              )}
             </div>
             <MarkdownDoc markdown={doc.body} />
           </section>
